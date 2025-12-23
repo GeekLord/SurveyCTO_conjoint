@@ -62,6 +62,18 @@ if (loadRandomizeOption === 1) {
 // Each 'levelsX' corresponds to an attribute and is a comma-separated list of values.
 var loadAttributeLevels = getPluginParameter('levels')
 
+// Get number of top-most attributes to fix in place (default 0)
+// If this is set (e.g. to 1), the first X attributes will not be shuffled.
+// The remaining attributes will be randomized if randomize=1.
+var loadFixedAttributes = getPluginParameter('fixed_attributes')
+var numFixedAttributes = 0;
+if (loadFixedAttributes) {
+  numFixedAttributes = parseInt(loadFixedAttributes, 10);
+  if (isNaN(numFixedAttributes)) {
+    numFixedAttributes = 0;
+  }
+}
+
 // Create array of levels resulting in [levels1, levels2, levels3. . .]
 var attributeLevels = loadAttributeLevels.split('|')
 
@@ -162,7 +174,7 @@ function randomize(i) {
   // Active if attributes are to be shown randomly. 
   if (randomizeAttributes) {
     // CUSTOM LOGIC: Fix the first X attributes, randomize the rest.
-    var numFixed = 1; // Number of attributes to keep fixed at the top (e.g. 1 means index 0 is fixed)
+    var numFixed = numFixedAttributes; // Number of attributes to keep fixed at the top (e.g. 1 means index 0 is fixed)
 
     // Ensure we have enough attributes to split
     if (numFixed < attributeOrder.length) {
