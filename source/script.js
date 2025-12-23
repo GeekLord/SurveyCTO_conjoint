@@ -66,7 +66,7 @@ var loadAttributeLevels = getPluginParameter('levels')
 // If this is set (e.g. to 1), the first X attributes will not be shuffled.
 // The remaining attributes will be randomized if randomize=1.
 var loadFixedAttributes = getPluginParameter('fixed_attributes')
-var numFixedAttributes = 0;
+var numFixedAttributes = 0
 if (loadFixedAttributes) {
   numFixedAttributes = parseInt(loadFixedAttributes, 10);
   if (isNaN(numFixedAttributes)) {
