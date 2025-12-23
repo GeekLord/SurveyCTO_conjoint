@@ -86,7 +86,7 @@ for (var b = 0; b < attributeLevels.length; b++) {
 
 // Get labels from form definition
 var loadLabels = getPluginParameter('labels')
-var loadedLabels = [];
+var loadedLabels;
 if (loadLabels == undefined) {
   loadedLabels = ['Profile 1', 'Profile 2'] // Set default labels
 } else {
