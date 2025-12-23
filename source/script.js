@@ -52,7 +52,7 @@ var attributeArray = loadFormAttributes.split(',')
 var loadRandomizeOption = getPluginParameter('randomize')
 
 // Check value of randomize option
-var randomizeAttributes = false;
+var randomizeAttributes = false
 if (loadRandomizeOption === 1) {
   randomizeAttributes = true;
 }
