@@ -1,7 +1,7 @@
 {
-	"name": "Conjoint Analysis",
+	"name": "Image Pair Vote",
 	"author": "Dobility",
-	"version": "1.0.32",
+	"version": "2.0.0",
 	"supportedFieldTypes": [
 		"text"
 	],

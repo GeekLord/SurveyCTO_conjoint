@@ -1,93 +1,51 @@
-# Conjoint Analysis
+# Image Pair Vote (SurveyCTO field plug-in)
 
-![Default appearance for the 'conjoint' field plug-in](extras/conjoint.png)
+This custom SurveyCTO field plug-in shows two images side by side and lets the respondent vote for one option by tapping the button under the image.
 
-## Description
+## What this plug-in is for
 
-This field plug-in is designed to help implement [conjoint analysis](https://en.wikipedia.org/wiki/Conjoint_analysis) also known as [Discrete Choice Modeling](https://en.wikipedia.org/wiki/Discrete_choice).
+Use this when your XLSForm already computes which two image filenames should be shown (for example with `pulldata()` from a `stimuli_manifest.csv` file), and you want to present those two images as a forced choice.
 
-Conjoint analysis is a research technique used to understand how people make decisions based on various attributes of a product or service. It helps in determining which features are most important to consumers and how they trade off one attribute against another. This field plug-in displays a set of profile pairs, randomly combined based on attributes you provide, for respondents to select their favorite. Analyze the collected data to identify which attributes have the most influence.
+## Parameters
 
-[![Download now](extras/beta-release-download.jpg)](https://github.com/surveycto/conjoint/raw/master/conjoint.fieldplugin.zip)
+Add this plug-in to a `text` field and configure it with `custom-image-pair-vote(...)` style parameters.
 
-### Features
-
-* Define various features (attributes) and their different possible states or degrees (levels). (See an example [here](https://github.com/surveycto/conjoint/wiki/Understanding-Conjoint-Analysis).)
-* Generate profiles consisting of random combinations of attribute levels based on the defined features.
-* Randomize the order in which the attributes are displayed.
-* Restrict changing answer once recorded to prevent bias.
-
-For more details see the Support Center Guide [How to conduct Conjoint Analysis in SurveyCTO](https://support.surveycto.com/hc/en-us/articles/19564034894867).
-
-### Data format
-
-The field stores a pipe (`|`) separated list of the ordinal representations of the options, as defined in the form. These are mapped to what is presented to the respondant and the choice selected. For example the result might be:
-
-    1,3,6|2,3,5|3,6,1|2
-
-The string representation of this would be:
-
-`Bread,Roll,Lettuce wrap|Protein,Turkey,Egg|Veggie,Bean sprouts,Tomato|Profile 2`
-
-Each item (separated by a pipe (`|`)) in the list represents a row in the table generated. So the item: 
-
- `1,3,6` or its string representation `Bread,Roll,Lettuce wrap` represents a row in the table. Within this item, components are delineated by commas (`,`). The initial component denotes the attribute, followed by two additional components that represent the randomly generated values for that attribute, specific to each individual profile. So in our example:
- 
- - `1` (Bread) - the attribute
- - `3` (Roll) - the attribute level generated for the first profile
- - `6` (Lettuce warp) - the attribute level generated for the second profile
-
-The last item in the field represents the selected profile. Following this logic, it means the options were presented as follows: 
-
-|  | Profile 1 | Profile 2 |
+| Key | Required | Description |
 | --- | --- | --- |
-| Bread | Roll | Lettuce wrap|
-| Protein | Turkey | Egg |
-| Veggie | Bean sprouts | Tomato |
+| `left_image` | Yes | Filename/path for the left image (for example from a calculate field). |
+| `right_image` | Yes | Filename/path for the right image. |
+| `labels` | No | Comma-separated button labels for left and right buttons. Default: `Option 1,Option 2`. |
+| `top_text` | No | Text above both images. |
+| `left_text` | No | Text above the left image. |
+| `right_text` | No | Text above the right image. |
+| `bypass` | No | If provided, shows a third “none/skip” button below both options. |
+| `data_format` | No | `numeric` (default) stores `1`, `2`, or `0` (bypass). `string` stores the selected label text. |
 
-And the selected option was `Profile 2`.
+## Answer values stored
 
-By default, the numeric representation is what is stored but you can also store a `string` representation of the options using the `data_format` parameter. Each field will be presented this way.
+- Default (`data_format = numeric`):
+  - `1` when left option is chosen
+  - `2` when right option is chosen
+  - `0` when bypass is chosen
+- With `data_format = string`:
+  - stores the label text of the selected button
 
-## How to use
+## Example appearance
 
-### Getting started
+```text
+custom-image-pair-vote(
+  left_image='${left_filename}',
+  right_image='${right_filename}',
+  labels='Image A,Image B',
+  top_text='Which post is more convincing?',
+  left_text='Post A',
+  right_text='Post B',
+  bypass='Neither'
+)
+```
 
-1. Download the [sample form](https://github.com/surveycto/conjoint/raw/master/extras/Sample%20form%20-%20Conjoint%20Analysis.xlsx) from this repo and upload it to your SurveyCTO server.
-2. Download the [conjoint.fieldplugin.zip file](https://github.com/surveycto/conjoint/raw/master/conjoint.fieldplugin.zip) from this repo, and attach it to the test form on your SurveyCTO server.
-3. Make sure to provide the correct parameters (see below).
+## Notes for SurveyCTO media files
 
-### Parameters
-
-| Key | Value |
-| --- | --- |
-| `attributes` | Comma-separated list of attributes. |
-| `levels` | This consists of two parts. The full string should be a pipe-separated list, with an item for each attribute. Each item in that list should be a comma-separated list of levels for that attribute. |
-| `labels` (Optional) | A comma-separated list of labels. These are used as the table headers and button labels. For now, there can only be two labels, one for each possible choice. The default labels are *Profile 1* and *Profile 2*. |
-| `randomize` (Optional) | Indicates whether the attributes should be randomized. By default, attributes are not randomized and appear in a fixed order. Set this to `1` to have the attributes randomized. |
-| `fixed_attributes` (Optional) | **New:** When `randomize` is set to `1`, this parameter controls how many of the top attributes remain fixed in their original position. For example, setting this to `1` means the first attribute will always stay at the top, while the remaining attributes will be shuffled. Default is `0` (all attributes are shuffled). |
-| `bypass` (Optional) | Provides an option for users to choose none of the presented profiles by using a button. Initially, this button is hidden. However, when a value is assigned, this will trigger the display of a button labeled with the assigned value. (What does the value of this signify? Is it the value assigned to the field when it is bypassed?) |
-| `data_format` (Optional) | The default behavior of the field plug-in is for the field value to store the ordinal (numeric) values of the attributes and levels. However, if you use this parameter to specify `data_format = 'string'`, then the field plug-in will store the string values instead, as supplied by the `attributes` and `levels` parameters. |
-
-### Examples
-
-Here is an example *appearance* for your *text* field that uses this field plug-in: 
-
-    `custom-conjoint( attributes = 'Bread,Protein,Veggies', 
-        levels = 'Bagel,Hero,Roll,Sliced white|Ham,Roast beef,Turkey|Tomato,Jalapenos,Roasted peppers,Onion' 
-        labels='Option 1, Option 2',
-        bypass='None of the above')`
-
-## More resources
-
-* **Sample form**  
-This form will help you explore the features in this field plug-in.  
-[Download sample form](https://github.com/surveycto/conjoint/raw/master/extras/Sample%20form%20-%20Conjoint%20Analysis.xlsx)  
-
-* **Developer documentation**  
-Instructions and resources for developing your own field plug-ins.  
-[https://github.com/surveycto/Field-plug-in-resources](https://github.com/surveycto/Field-plug-in-resources)
-
-* **User documentation**  
-How to get started using field plug-ins in your SurveyCTO form.  
-[https://docs.surveycto.com/02-designing-forms/03-advanced-topics/06.using-field-plug-ins.html](https://docs.surveycto.com/02-designing-forms/03-advanced-topics/06.using-field-plug-ins.html)
+- Upload all referenced images with the form.
+- If you pass just a filename (e.g. `HIND_NEG_01_crude_HIGH_jagran.png`), the plug-in will try both that filename directly and `jr://images/<filename>` as a fallback on device.
+- You can generate those filenames from `pulldata()` against your CSV manifest.
