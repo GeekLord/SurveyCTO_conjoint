@@ -1,4 +1,4 @@
-/* global fieldProperties, setAnswer, getPluginParameter, clearAnswer, setMetaData, getMetaData */
+/* global fieldProperties, setAnswer, getPluginParameter, setMetaData */
 
 var DARK_GREY = '#555555'
 var LIGHT_GREY = '#e7e7e7'
@@ -60,7 +60,6 @@ function renderLayout() {
   applyImageWithFallback(rightImageElement, rightImage)
 }
 
-
 function getImageCandidates(rawValue) {
   var value = (rawValue || '').trim()
   if (value === '') {
@@ -105,9 +104,6 @@ function restoreAnswerIfAvailable() {
   }
 
   var selectedValue = currentAnswer
-  if (dataFormat === 0) {
-    selectedValue = currentAnswer
-  }
 
   disableButtons()
 
@@ -124,7 +120,7 @@ function restoreAnswerIfAvailable() {
 }
 
 function setSelection(selectedCode, selectedLabel) {
-  var result = dataFormat === 0 ? selectedLabel : selectedCode
+  var result = dataFormat === 0 ? selectedLabel : String(selectedCode)
   var meta = [leftImage, rightImage, topText, leftText, rightText].join('|')
 
   setMetaData(meta)
